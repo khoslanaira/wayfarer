@@ -1,9 +1,13 @@
-FROM node:18 AS builder
+# Stage 1: Build the React application
+FROM node:20 AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Only copy package.json to completely ignore any corrupted package-lock.json
+COPY package.json ./
+
+# Force install bypassing any peer dependency errors
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run build
